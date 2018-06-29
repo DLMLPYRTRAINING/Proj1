@@ -6,12 +6,11 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 import time
-import object_generator as og
+import data_gen as dg
 
 # ==============================================================================
 # Import the Data
-train_images,train_labels = og.obj_provider(count=138, data_type="Train", file_path = "Data")
-test_images,test_labels = og.obj_provider(count=138, data_type="Test", file_path = "Data")
+train_images,train_labels,test_images,test_labels = dg.load_data(total_row=100)
 
 # Explore the Data
 from keras.utils import to_categorical
@@ -91,7 +90,7 @@ def createModel():
 
 # Train the model
 model1 = createModel()
-batch_size = 23
+batch_size = 256
 epochs = 200
 model1.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -137,7 +136,7 @@ model2 = createModel()
 
 model2.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 
-batch_size = 23
+batch_size = 256
 epochs = 200
 datagen = ImageDataGenerator(
 #         zoom_range=0.2, # randomly zoom into images

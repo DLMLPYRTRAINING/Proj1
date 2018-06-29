@@ -1,8 +1,9 @@
 from keras.models import model_from_yaml
-import object_generator as og
+import data_gen as dg
 import numpy as np
 from keras.utils import to_categorical
 import os
+import matplotlib.pyplot as plt
 
 
 def model_loader(model_name="", file_path = "Models"):
@@ -22,9 +23,8 @@ def model_loader(model_name="", file_path = "Models"):
         # score = loaded_model.evaluate(X, Y, verbose=0)
         # print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
 
-def run_random_imges(test_images = None, test_labels = None, count = 10):
-    if not isinstance(test_images,np.ndarray) or not isinstance(test_labels,np.ndarray):
-        test_images, test_labels = og.obj_provider(count=count, data_type="Test")
+def run_random_imges():
+    train_images, train_labels, test_images, test_labels = dg.load_data(split_ratio=0,total_row=10)
 
     print('Testing data shape : ', test_images.shape, test_labels.shape)
     print(test_labels)
@@ -54,7 +54,7 @@ def run_random_imges(test_images = None, test_labels = None, count = 10):
     print('Original label 0 : ', test_labels)
     print('After conversion to categorical ( one-hot ) : ', test_labels_one_hot)
 
-    model_name = "Model1_20180619_143729"
+    model_name = "Model1_20180629_142228"
     model = model_loader(model_name=model_name)
     # # evaluate loaded model on test data
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
@@ -65,15 +65,10 @@ def run_random_imges(test_images = None, test_labels = None, count = 10):
     print("prediction:", prediction)
     print("Actual:    ", test_labels.reshape(1, -1)[0])
 
-# run a image
-def run_perticuler_img():
-    file_path = r'C:\Users\slaik\Documents\Sandeep\Scripts\Python\PycharmProjects\imageClassifier\random_test_data'
-    # og.obj_pop(count=1, file_path=file_path)
-    og.split_objs(ratio=0,file_path=file_path)
-    x, y = og.obj_provider(count=1, file_path=file_path, data_type="Test")
-    run_random_imges(test_images=x, test_labels=y)
-    return
+
+    plt.imshow(test_images[0, :, :], cmap='gray')
+    plt.title("Ground Truth : {} Prediction: {}".format(test_labels[0], prediction[0]))
+    plt.show()
 # ------------------------------------------------------------------------------
 # main starts from here
-# run_random_imges(count=1)
-run_perticuler_img()
+run_random_imges()

@@ -75,10 +75,13 @@ def split(df, headSize) :
     tl = df.tail(len(df)-headSize)
     return hd, tl
 
-def load_data(img_path="data",path="data"+sep+"tracking_master.csv", split_ratio=0.8):
+def load_data(img_path="data",path="data"+sep+"tracking_master.csv", split_ratio=0.8, total_row=0):
 
     # first open the file that needs to be slitted
-    data = pd.read_csv(path,sep=',')
+    if total_row > 0 :
+        data = pd.read_csv(path,sep=',',nrows=total_row)
+    else:
+        data = pd.read_csv(path, sep=',')
 
     # print(data.head())
 
@@ -114,8 +117,8 @@ def load_data(img_path="data",path="data"+sep+"tracking_master.csv", split_ratio
         channel = np.array(op_img).shape[2]
 
     # lets take care of the target part separately first
-    y_train = training_data_tracker["Flag"]
-    y_test = test_data_tracker["Flag"]
+    y_train = training_data_tracker['Flag'].values.reshape(-1,1)
+    y_test = test_data_tracker['Flag'].values.reshape(-1,1)
 
     # now lets look into the feature part
     # create a default placeholder of <number of images>,<width>,<height>,<channel>
@@ -150,4 +153,4 @@ def load_data(img_path="data",path="data"+sep+"tracking_master.csv", split_ratio
 # ==================================================================
 # main
 # fn_make_img(count=10000)
-load_data()
+# load_data(total_row=100)
